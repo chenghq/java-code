@@ -15,36 +15,39 @@ import org.apache.commons.lang3.StringUtils;
 */
 public class ReflectUtil {
 	/** 获取类中所有的属性
-	 * cmdClass 中的属性与 baseCmdClass 中的属性 集合*/
+	 * cmdClass 中的属性与 baseCmdClass 中的属性 集合
+	 * 可以根据这个方法获取单个类的所有属性
+	 */
 	public static List<Field> getAllFielsForClass(Class<?> cmdClass, Class<?> baseCmdClass) {
 		List<Field> fields = new ArrayList<Field>();
-        Collections.addAll(fields, cmdClass.getDeclaredFields());
-        /** 获取cmdClass的父类*/
-        Class<?> superClass = cmdClass.getSuperclass();
-        while (baseCmdClass.isAssignableFrom(superClass)) {
-            Field[] superClassFields = superClass.getDeclaredFields();
-            if (superClassFields != null) {
-            	Collections.addAll(fields, superClassFields);
-            }
-            superClass = superClass.getSuperclass();
-        }
-        return fields;
+		Collections.addAll(fields, cmdClass.getDeclaredFields());
+        	/** 获取cmdClass的父类*/
+        	Class<?> superClass = cmdClass.getSuperclass();
+        	while (baseCmdClass.isAssignableFrom(superClass)) {
+            		Field[] superClassFields = superClass.getDeclaredFields();
+            		if (superClassFields != null) {
+            			Collections.addAll(fields, superClassFields);
+            		}
+            		superClass = superClass.getSuperclass();
+        	}
+        	return fields;
 	}
 	
 	/**
 	 * 功能：通过对象和具体的字段名字获得字段的值
 	 *##### （先获取字段的get方法）
+	 * 需要注意的是: 对象中的变量必须要实现getter和setter
 	 * */
 	public static Object getFieldValueByGetMethod(Object obj, String fieldName) throws Exception {
 		Object o = null;
 		if (StringUtils.isNotBlank(fieldName) && null != obj) { // 字段为空直接返回空
 			Class<?> clazz = obj.getClass();  
-		    PropertyDescriptor pd = new PropertyDescriptor(fieldName, clazz);  
-		    Method getMethod = pd.getReadMethod();// 获得get方法  
+			PropertyDescriptor pd = new PropertyDescriptor(fieldName, clazz);  
+		    	Method getMethod = pd.getReadMethod();// 获得get方法  
 		  
-	        if (pd != null) {  
-	            o = getMethod.invoke(obj);//执行get方法返回一个Object  
-	        }  
+	        	if (pd != null) {  
+	            		o = getMethod.invoke(obj);//执行get方法返回一个Object  
+	        	}  
 		}
 		return o;
 	}
